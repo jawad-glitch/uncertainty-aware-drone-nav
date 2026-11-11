@@ -45,6 +45,7 @@ def run(
         pos     (N, 3)  true position
         vel     (N, 3)  true velocity
         rpy     (N, 3)  true roll, pitch, yaw
+        ang_vel (N, 3)  true angular velocity (world frame, rad/s)
         target  (N, 3)  target position the controller used for that step
     If output_folder is given, the dict is also saved there as <save_name>.npz.
     """
@@ -76,6 +77,7 @@ def run(
         pos_log = np.zeros((n_steps, 3))
         vel_log = np.zeros((n_steps, 3))
         rpy_log = np.zeros((n_steps, 3))
+        ang_vel_log = np.zeros((n_steps, 3))
         target_log = np.zeros((n_steps, 3))
 
         action = np.zeros((1, 4))   # first step applies zero thrust
@@ -99,6 +101,7 @@ def run(
             pos_log[i] = state[POS]
             vel_log[i] = state[VEL]
             rpy_log[i] = state[RPY]
+            ang_vel_log[i] = state[ANG_VEL]
             target_log[i] = target
 
             wp = (wp + 1) % num_wp  # advance after logging
@@ -106,7 +109,7 @@ def run(
         env.close()
 
     data = {"time": time_log, "pos": pos_log, "vel": vel_log,
-            "rpy": rpy_log, "target": target_log}
+            "rpy": rpy_log, "ang_vel": ang_vel_log, "target": target_log}
 
     if output_folder is not None:
         os.makedirs(output_folder, exist_ok=True)
