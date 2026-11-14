@@ -10,8 +10,11 @@ From a notebook:
     data = run(duration_sec=12, output_folder="/content/drive/MyDrive/.../results")
 """
 import os
+import time
 import numpy as np
 
+
+from gym_pybullet_drones.utils.utils import sync
 from gym_pybullet_drones.utils.enums import DroneModel, Physics
 from gym_pybullet_drones.envs.CtrlAviary import CtrlAviary
 from gym_pybullet_drones.control.DSLPIDControl import DSLPIDControl
@@ -83,6 +86,8 @@ def run(
         action = np.zeros((1, 4))   # first step applies zero thrust
         wp = 0
 
+        START = time.time()
+
         for i in range(n_steps):
             obs, reward, terminated, truncated, info = env.step(action)
             state = obs[0]          # ground truth; Phase 2 swaps in the filter estimate here
@@ -105,6 +110,9 @@ def run(
             target_log[i] = target
 
             wp = (wp + 1) % num_wp  # advance after logging
+            
+            if gui:
+                sync(i, START, env.CTRL_TIMESTEP)
     finally:
         env.close()
 
