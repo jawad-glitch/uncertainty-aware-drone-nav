@@ -1,0 +1,5 @@
+numpy
+scipy
+matplotlib
+filterpy
+gym-pybullet-drones @ git+https://github.com/utiasDSL/gym-pybullet-drones.git@348b5c18a4bb770a48928b9d044decf77ca33302
